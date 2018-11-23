@@ -13,7 +13,16 @@ class MangakakalotEngine(Engine):
         self.url = "https://mangakakalot.com/search/" + re.sub(r"\s+", '_', manga_name.lower())
 
     def download(self):
-        pass
+        browser = wd.PhantomJS()
+	    browser.get(self.url)
+	    try:
+	    	element = WebDriverWait(browser, 10).until(ec.presence_of_all_elements_located((By.CLASS_NAME, "daily-update")))
+	    except TimeoutException:
+	        print("Request Timeout")
+	        raise TimeoutError
+		element = bs(element[0].get_attribute('innerHTML'), 'html.parser')
+		element = [item.select("span > a") for item in element]
+		[print(item) for item in element]
 
     def crawl(self, links):
         pass
